@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>HaDiVe</title>
+  <link href="css/leaflet.css" rel="stylesheet" />
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+  <link href="css/style.css" rel='stylesheet' />
+  <link href="css/buttons.css" rel="stylesheet" />
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+  <!--link rel="stylesheet" type="text/css" href="lightview.css" /!-->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="js/d3.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/leaflet.js"></script>
+  <script src='js/mapbox.js'></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+  <!-- script type="text/javascript" src="spinners.min.js"></script>
+  <script type="text/javascript" src="lightview.js"></script-->
+
+</head>
+
+<body>
+
+  <div id="loading">
+    <h2 style="text-align:center" id="loading2">Loading Camera and Pedestrian Count data.Please wait for seconds......</h2>
+  </div>
+
+  <div id="container_head">
+    <h1>HaDiVe : Computer Vision Team</h1>
+    <!-- <a href="#info" class="lightview">About Us</a> -->
+        <div id="info" style="display:none">PKUVIS</div>
+  </div>
+
+  <div id="container_menu">
+    <div id="content_menu">
+      <!-- <h5 class="thicker" style="line-height: 10px">Cameras on the Map: 17</h5> -->
+      <!-- <h5 class="thicker" style="line-height: 10px" style="margin-top:10px">Routes on the Map: 86</h5> -->
+      <!-- <HR style="margin-top:10px"> -->
+      <ul class="fa-ul">
+
+
+        <!-- <button class="button button-inverse button-raised button-box button-small" id="menu_routes" title="Display routes"><i class="fa fa-road"></i>
+        </button>
+        <button class="button button-inverse button-raised button-box button-small" id="menu_stops" title="Display stops"><i class="fa fa-bus"></i>
+        </button>
+        <br>
+        <a href="#" id="selectAll" class="button button-inverse button-raised button-rounded button-small" style="margin-top:10px">Select All Routes</a>
+        <br>
+        <a href="#" id="selectNone" class="button button-inverse button-raised button-rounded button-small" style="margin-top:10px">Select None Route</a> -->
+
+        <!-- <p>play<i id="menu_animate" class="fa fa-play"></i> </p> -->
+        <!-- <HR> -->
+        <center><h4 class="" style="font-size:2.2em; margin-bottom:-6px; ">HaDiVe Team</h4>
+
+        <img src="images/nyu.png" style="width:80px; margin-top:6px; margin-bottom:15px;"/>
+        <img src="images/cusp.png" style=""/>
+        <p style="font-size:1.2em">
+          <span>
+            Current Time:
+            <!-- <h5>Current Time: </h5> -->
+            <text class="currTime">06:00</text>
+          </span>
+        </p>
+</center>
+        <!-- <button class="button button-inverse button-raised button-box button-small" id="menu_animate" title="start animation"><i class="fa fa-play"></i></button>
+        <button class="button button-inverse button-raised button-box button-small" id="menu_reset" title="reset animation"><i class="fa fa-stop"></i></button> -->
+        <br>
+        <div id="fps_slider" style="margin-top:25px"></div>
+
+        <!-- <button class="button button-glow button-circle button-raised button-pill button-inverse"><i id="menu_reset" class="fa fa-stop"></i></button> -->
+        <!-- <i id="menu_reset" class="fa fa-stop"></i> -->
+
+      </ul>
+    </div>
+  </div>
+
+  <div id="videoCont">
+      <div id="container" style="">
+        <div id="content" >
+          <h2 class="title">Video</h2>
+          <div class="video">
+              
+
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="container_tl">
+    <div id="timeline"></div>
+  </div>
+
+  <script type="text/javascript">
+
+    L.mapbox.accessToken = '<pk.eyJ1IjoibGl1bHUiLCJhIjoiVzY2cjhiRSJ9.XYnctjNIYOorLU6qpBi5mQ>';
+
+    var mapboxTiles = L.tileLayer('https://{s}.tiles.mapbox.com/v3/liulu.k7flejmm/{z}/{x}/{y}.png', {
+      attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+    });
+
+    var map = L.map('map')
+      .addLayer(mapboxTiles)
+      .setView([40.714638, -73.967378], 13);
+
+    map._initPathRoot()
+    
+    // L.mapbox.styleLayer('mapbox://styles/mapbox/basic-v9').addTo(map);
+    
+    var svg = d3.select("#map").select("svg"),
+      g = svg.append("g");
+
+    routeG = g.append("g").attr("class", "route-g");
+    stopG = g.append("g").attr("class", "stop-g");
+
+    var camera_location = [
+            [40.728279, -74.002867],
+            [40.717642, -74.007589],
+            [40.734894, -73.991062],
+            [40.719964, -73.978750],
+            [40.826403, -73.950357],
+            [40.841725, -73.939340],
+            [40.813389, -73.956273],
+            [40.787679, -73.975024],
+            [40.770320, -73.991379],
+            [40.770115, -73.957413],
+            [40.752807, -73.979281],
+            [40.742911, -73.992787],
+            [40.739760, -74.002519],
+            [40.717871, -73.985618],
+            [40.716724, -73.989160],
+            [40.717364, -73.991170],
+            [40.717666, -74.007546],
+            [40.728791, -74.007085],
+            [40.691999, -73.982435]
+        ]
+
+        // /$("#videoCont").style.display = 'none';
+
+        function clickZoomShowVideo(e) {
+
+            var targetPoint = map.project(e.target.getLatLng(), 14).subtract([-400 / 2, 0]),
+            targetLatLng = map.unproject(targetPoint, 14);
+
+            map.setView(targetLatLng, 14);
+            // map.setView(e.target.getLatLng(),13);
+            console.log(e.target.getLatLng().lng);
+            if(e.target.getLatLng().lng==-73.97875) {
+
+                 $(".video").html('<div><iframe width="560" height="315" src="http://dotsignals.org/google_popup.php?cid=440" frameborder="0" allowfullscreen></iframe></div>');
+            }
+            else { 
+                $(".video").html('<div><iframe width="420" height="315" src="https://www.youtube.com/embed/IcmtFBrec0c" frameborder="0" allowfullscreen></iframe></div>');
+            }
+            // $("#videoCont").style.display = 'block';
+        }
+
+        var markers = []
+        for (i = 0; i < camera_location.length; i++) {
+            var marker  = L.marker(camera_location[i]).addTo(map);
+            // var popup = new mapboxgl.Popup()
+            //     .setLngLat(camera_location[i])
+            //     // .setHTML(feature.properties.description)
+            //     .addTo(map);
+            // .bindPopup(new mapboxgl.Popup(setHTML("asda")));
+            // markerArr.push(marker);
+            marker.bindPopup("Camera Name").on('click', clickZoomShowVideo);//.openPopup();
+
+        }
+
+
+
+    // $(document).ready(function() {
+    //   toggles.init();
+    // });
+  </script>
+  <script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+  <script src="choose.js"></script>
+  <script src="animate.js"></script>
+  <script src="parameter.js"></script>
+  <!-- <script src="routes.js"></script> -->
+  <!-- <script src="stops.js"></script> -->
+
+  <script src="timeline.js"></script>
+</body>
