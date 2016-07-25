@@ -1,0 +1,8 @@
+{
+  "name": "Hadive",
+  "description": "Hadive",
+  "image": "heroku/python",
+  "repository": "https://github.com/bilguun/hadiveweb",
+  "keywords": ["python"],
+  "addons": []
+}
