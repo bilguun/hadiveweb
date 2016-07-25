@@ -35,13 +35,15 @@
 
   <div id="container_head">
     <h1>HaDiVe : Computer Vision Team</h1>
-    <!-- <a href="#info" class="lightview">About Us</a> -->
-        <div id="info" style="display:none">PKUVIS</div>
+        <!-- <div id="info" style="display:none">PKUVIS</div> -->
   </div>
 
   <div id="container_menu">
     <div id="content_menu">
-      <!-- <h5 class="thicker" style="line-height: 10px">Cameras on the Map: 17</h5> -->
+      <!-- <h5 class="thicker" style="line-height: 10px">Cameras on the Map: 17</h5>       -->
+      <h4><a href="#aboutus" class="lightview" id="aboutus">About Us</a></h4>
+      <h4><a href="#blog" class="lightview" id="blog">Blog</a></h4>
+      <h4><a href="mailto:hadive@gmail.com" target="_top" class="lightview" id="blog">Contact Us</a></h4>
       <!-- <h5 class="thicker" style="line-height: 10px" style="margin-top:10px">Routes on the Map: 86</h5> -->
       <!-- <HR style="margin-top:10px"> -->
       <ul class="fa-ul">
@@ -59,7 +61,6 @@
         <!-- <p>play<i id="menu_animate" class="fa fa-play"></i> </p> -->
         <!-- <HR> -->
         <center><h4 class="" style="font-size:2.2em; margin-bottom:-6px; ">HaDiVe Team</h4>
-
         <img src="images/nyu.png" style="width:80px; margin-top:6px; margin-bottom:15px;"/>
         <img src="images/cusp.png" style=""/>
         <p style="font-size:1.2em">
@@ -82,16 +83,8 @@
     </div>
   </div>
 
-  <div id="videoCont">
-      <div id="container" style="">
-        <div id="content" >
-          <h2 class="title">Video</h2>
-          <div class="video">
-              
-
-          </div>
-        </div>
-      </div>
+  <div id="videoCont" style="display:none;">
+      
   </div>
 
   <div id="map"></div>
@@ -144,23 +137,52 @@
             [40.691999, -73.982435]
         ]
 
+    camera_names = [
+       '6 Av & W Houston St',
+       'Worth St & E Broadway',
+       'Union Sq & 14 St',
+       'E Houston St & Ave D',
+       'Broadway & 145 St',
+       'Broadway & 169 St',
+       'Amsterdam Ave & 125 St',
+       'Amsterdam & 86 St',
+       '11 Ave & 57 St',
+       '2 Ave & 74 St',
+       'Madison Ave & 42 St',
+       '6 Ave & 23 St',
+       '8 Ave & 14 St',
+       'WBB-6 & Delancy-Clinton',
+       'Grand St & Essex St',
+       'Grand St & Allen St',
+       'Worth St & W Broadway',
+       'W Houston St & Hudson St',  
+    ]
         // /$("#videoCont").style.display = 'none';
 
         function clickZoomShowVideo(e) {
 
             var targetPoint = map.project(e.target.getLatLng(), 14).subtract([-400 / 2, 0]),
             targetLatLng = map.unproject(targetPoint, 14);
-
+            // slideUp();
+            // slideDown();
+            // slideDown();
+            $("#videoCont").hide();
+            $("#videoCont").html('<div id="container" style=""><div id="content" ><h2 class="title">Camera Feed</h2><div class="video"></div></div></div>')
             map.setView(targetLatLng, 14);
+            // console.log(camera_name);
+            if ( $( "#videoCont" ).is( ":hidden" ) ) {
+              $( "#videoCont" ).slideDown(  1000, function() {});
+            } 
             // map.setView(e.target.getLatLng(),13);
-            console.log(e.target.getLatLng().lng);
+            // console.log(e.target.getLatLng().lng);
             if(e.target.getLatLng().lng==-73.97875) {
 
-                 $(".video").html('<div><iframe width="560" height="315" src="http://dotsignals.org/google_popup.php?cid=440" frameborder="0" allowfullscreen></iframe></div>');
+                 $(".video").html('<div>Feed from DOT camera : but they do not allow iframe embeding :(</div>');
             }
             else { 
-                $(".video").html('<div><iframe width="420" height="315" src="https://www.youtube.com/embed/IcmtFBrec0c" frameborder="0" allowfullscreen></iframe></div>');
+                $(".video").html('<div style="width:100% !important;" ><iframe width="420" height="315" src="https://www.youtube.com/embed/lkxI_rJ7uTU" frameborder="0" allowfullscreen></iframe></div><div id="number"><h4>Number of pedestrians: 5</h4></div>');
             }
+
             // $("#videoCont").style.display = 'block';
         }
 
@@ -173,7 +195,7 @@
             //     .addTo(map);
             // .bindPopup(new mapboxgl.Popup(setHTML("asda")));
             // markerArr.push(marker);
-            marker.bindPopup("Camera Name").on('click', clickZoomShowVideo);//.openPopup();
+            marker.bindPopup(camera_names[i]).on('click', clickZoomShowVideo);//.openPopup();
 
         }
 
@@ -185,13 +207,45 @@
   </script>
   <script type="text/javascript">
 <!--
-    function toggle_visibility(id) {
-       var e = document.getElementById(id);
-       if(e.style.display == 'block')
-          e.style.display = 'none';
-       else
-          e.style.display = 'block';
-    }
+    
+
+    var blog ='TAGS: Computer Vision, Artificial Intelligence, Machine Learning, Reinforced Learning, Active Learning In the span of three months that we had learning about and eventually working on Computer Vision models for the pedestrian detection, the above statement has been a recurring notion to follow. With all the ‘coolness’ that Machine Learning algorithms bring with it, training models and doing numerous parameter sweeps is not the coolest thing to do (sleepless nights and coffee!). And the results will eventually make you realize that you are indeed, using numbers (probability is a better word) at the end to make a ‘machine’ say an output you want, to the best of its expectation (and even yours). But Hey! That’s not what most of the sci-fi movies taught us. Imagine the Terminator waiting for more labeled data for training, to wonder if Sarah Connor was the one he had to kill or her look-alike! Man – action movies would have been different. But this is the current state of AI, and as Yann Lecun explains it,” Human-level AI is not just around the corner; we are missing some pretty basic principles, like methods that let machines learn by observing the world, without requiring gobs of human-annotated data, etc.” This was the problem we faced, as the lack of sufficient labeled data, reduced our chances of detecting humans at times, and caught humans that were not there. There were many tweaks and ideas that we could not accomplish due to the lack of time. And here we will discuss about making our 3 months old machine a little smarter by introducing human-intervened penalty while pedestrian detection. Currently the model is working off of the labeled data we had generated. Our model takes patches of an image, extracts features from it and predicts on those features whether it contains a human or not. This (the model) is subject to the less labeled data and the labeled bias. Especially when the model detects a tree trunk as a human, there is this sudden urge to make the model stop and tell, ‘Hey Buddy, can’t you see it’s a tree trunk!’ and wish if there was some magical way to tell the machine that. DIGRESS: Our amazing mentor Prof. Greg Dobler would always say how amazed he is by human brain that it can always distinguish between a small human and blob while the machine cannot. And that’s because our mind has been developed (or learnt) over millions of years, he would say. Bingo! What if we work on developing the mind of this machine while it is detecting pedestrians?  If we can stop the model while it predicts wrongly – says it’s a human when it isn’t – and enter a value ‘y’ or ‘n’ for if that patch has a human or not – and the script running in the backend can take that patch and store the ‘y’ or ‘n’ and the classifier can refit the model on the new learnt decision by the human, the chance that it will detect wrongly the next time is lesser. This way we serve the Hebbian Learning of our young model. This is reinforced learning – Yaayy!! Err.. NO. Our Professor had politely corrected, saying this is Semi-Supervised Learning (Active Learning). But the fact that you can correct the small baby-steps of your model, enforces the scope of this project in a better direction. Generating labeled data on the fly! And this is how a new labeling model was born in the humble world of Hadive (the name we gave our project)… and all lived happily ever after. HOW IT WOULD LOOK LIKE TO TEACH YOUR MODEL THE DIFFERENCE BETWEEN A TREE TRUNK AND A HUMAN!'
+
+    $(document).ready(function(){
+      
+      $("#aboutus").click(function(){
+
+        
+            $("#videoCont").hide();
+            $("#videoCont").html('<div id="container" style="width:50% !important;"><div id="content" ><h2 class="title">Hadive Team</h2><img src="images/teampic.jpg" style="width:40% !important;"/><img src="images/teampic3.png" style="width:60% !important;"/><h4>ALEC MCLEAN, BILGUUN TURBOLI, BOYA YU, DENIS KHRYASHCHEV, PRIYA KHOKHER, RICHARD NAM</h4><div class="video">The purpose of this project was to show that the field of computer vision can be used to count pedestrians. Using three different computer vision techniques, Blob detection, Histogram of Oriented Gradients, and Convolutional Neural Networks, the team will build models that will count pedestrians in real time. There are numerous benefits to incorporating computer vision into the way Cities count pedestrians. The benefits can be broken down into 3 categories: real- time information, autonomous extraction, and accurate counts.</div><h3>Mentor: Greg Dobler, Sponsor: CUSP Urban Observatory</h3></div></div>')
+            // map.setView(targetLatLng, 14);
+
+           if ( $( "#videoCont" ).is( ":hidden" ) ) {
+              $( "#videoCont" ).slideDown(  1000, function() {});
+            } 
+
+      });
+
+      $("#blog").click(function(){
+
+        
+            $("#videoCont").hide();
+            $("#videoCont").html('<div id="container" style="width:50% !important;"><div id="content"><h2 class="title">To err is Machine, To optimize is Human</h2><img src="images/blog2.jpg" style="width:100% !important;"/><div class="video">' + blog + '</div></div>')
+            // map.setView(targetLatLng, 14);
+
+            if ( $( "#videoCont" ).is( ":hidden" ) ) {
+              $( "#videoCont" ).slideDown(  1000, function() {});
+            } 
+
+      });
+
+    });
+    // function slideUp() {
+       
+    //   $( "#videoCont" ).slideUp( "slow", function() {
+    //       // Animation complete.
+    //     });
+    // }
 //-->
 </script>
   <script src="choose.js"></script>
