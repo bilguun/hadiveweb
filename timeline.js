@@ -1,4 +1,5 @@
 function timedata(busdata) {
+  d3.select("#loading").style("visibility", "hidden");
   passengerPair = [];
   var timeStep_p = 1000 * 60;
 
